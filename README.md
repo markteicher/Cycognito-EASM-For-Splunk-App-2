@@ -1,4 +1,4 @@
-![Cycognito](docs/images/cycognito_logo.jpg)
+![CyCognito Logo](docs/image/cycognito_logo.jpg)
 
 
 # Cycognito EASM For Splunk App 2
