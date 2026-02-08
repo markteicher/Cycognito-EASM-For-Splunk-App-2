@@ -1,3 +1,5 @@
+![CyCognito Logo](cycognito_logo.jpg)
+
 # Cycognito EASM For Splunk App 2
 
 ## Overview
