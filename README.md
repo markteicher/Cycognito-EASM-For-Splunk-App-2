@@ -56,7 +56,7 @@ Cycognito provides visibility into the following externally observable assets an
 | Feature | Description |
 |------|-------------|
 | 🌐 External Asset Discovery | Identify exposed hosts and services |
-| 🔍 Internet-Wide Search | Query the global Censys scan index |
+| 🔍 Internet-Wide Search | Query the Cycognito scan index |
 | 🧭 Host Intelligence | Deep inspection of services and banners |
 | 🧬 Certificate Intelligence | SSL/TLS certificate visibility |
 | 🕵️ Exposure Context | Protocols, software, and metadata |
