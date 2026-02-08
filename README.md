@@ -1,6 +1,10 @@
 # Cycognito EASM For Splunk App 2
 
+## Overview
 
+Cyognito External Attack Surface Management (EASM) for Splunk provides full visibility into an organization’s externally exposed digital footprint using the Cycognito EASM APIs.
+
+This Splunk App enables security teams to **discover, monitor, analyze, and operationalize external attack surface data** directly in Splunk—without relying on the Cycognito External Attack Surface Management (EASM) portal User Interface.
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
