@@ -11,6 +11,6 @@
 ---
 ⚠️ Disclaimer
 
-This Splunk App is not an official Cycognkto products or utilities
+This Splunk App is not an official Cycognito products or utility.
 
 Use of this software is not covered by any license, warranty, or support agreement you may have with Cycognito.
