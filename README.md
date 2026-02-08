@@ -1,1 +1,1 @@
-# Cycognito-EASM-For-Splunk-2
+# Cycognito EASM For Splunk App 2
