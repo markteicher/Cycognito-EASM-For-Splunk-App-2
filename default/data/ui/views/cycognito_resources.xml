@@ -1,0 +1,102 @@
+<!--
+=============================================================================
+ default/data/ui/views/cycognito_resources.xml
+ CyCognito Resources Hub
+ External resource links only
+=============================================================================
+-->
+<dashboard version="1.1" theme="light">
+  <label>📚 CyCognito Resources Hub</label>
+
+  <row>
+    <panel>
+      <html>
+
+        <style>
+          .portal-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:22px;
+            margin-top:20px;
+          }
+          .portal-tile{
+            background:#ffffff;
+            border:1px solid #e5e5e5;
+            border-radius:8px;
+            padding:22px;
+            text-align:center;
+            transition:all .18s ease;
+          }
+          .portal-tile:hover{
+            box-shadow:0 4px 14px rgba(0,0,0,.18);
+            transform:translateY(-2px);
+          }
+          .portal-icon{font-size:34px;margin-bottom:10px;}
+          .portal-title{font-size:15px;font-weight:600;}
+          .portal-link{text-decoration:none;color:inherit;display:block;}
+        </style>
+
+        <div class="portal-grid">
+
+          <a class="portal-link" href="https://www.cycognito.com/resources/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">📚</div>
+              <div class="portal-title">Resources Overview</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/resources/webinars/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🎥</div>
+              <div class="portal-title">Webinars</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/blog/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">📝</div>
+              <div class="portal-title">Blog</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/emerging-threats/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🚨</div>
+              <div class="portal-title">Emerging Threats</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/glossary/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">📖</div>
+              <div class="portal-title">Cybersecurity Glossary</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/exposure-management/ctem/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🎯</div>
+              <div class="portal-title">CTEM Guide</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/attack-surface-management/external-attack-surface-management/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🌐</div>
+              <div class="portal-title">External Attack Surface Management</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/attack-surface-management/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🛡️</div>
+              <div class="portal-title">Attack Surface Management</div>
+            </div>
+          </a>
+
+        </div>
+
+      </html>
+    </panel>
+  </row>
+</dashboard>
