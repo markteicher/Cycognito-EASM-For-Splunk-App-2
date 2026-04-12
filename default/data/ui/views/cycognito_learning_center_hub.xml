@@ -1,0 +1,151 @@
+<!--
+=============================================================================
+ default/data/ui/views/cycognito_learning_center_hub.xml
+ CyCognito Learning Center Hub
+ External learning links only
+=============================================================================
+-->
+<dashboard version="1.1" theme="light">
+  <label>📘 CyCognito Learning Center Hub</label>
+
+  <row>
+    <panel>
+      <html>
+
+        <style>
+          .portal-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:22px;
+            margin-top:20px;
+          }
+          .portal-tile{
+            background:#ffffff;
+            border:1px solid #e5e5e5;
+            border-radius:8px;
+            padding:22px;
+            text-align:center;
+            transition:all .18s ease;
+          }
+          .portal-tile:hover{
+            box-shadow:0 4px 14px rgba(0,0,0,.18);
+            transform:translateY(-2px);
+          }
+          .portal-icon{font-size:34px;margin-bottom:10px;}
+          .portal-title{font-size:15px;font-weight:600;}
+          .portal-link{text-decoration:none;color:inherit;display:block;}
+        </style>
+
+        <div class="portal-grid">
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">📘</div>
+              <div class="portal-title">CyCognito Learning Center</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/ai-security/ai-agent-security/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🤖</div>
+              <div class="portal-title">AI Agent Security</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/api-security/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🔌</div>
+              <div class="portal-title">API Security</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/application-security/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">💻</div>
+              <div class="portal-title">Application Security</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/attack-surface-management/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🌐</div>
+              <div class="portal-title">Attack Surface Management</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/cloud-security/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">☁️</div>
+              <div class="portal-title">Cloud Security</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/cyber-attack/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">⚠️</div>
+              <div class="portal-title">Cyber Attack</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/drps/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🛰️</div>
+              <div class="portal-title">DRPS</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/exposure-management/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">📍</div>
+              <div class="portal-title">Exposure Management</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/penetration-testing/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🧪</div>
+              <div class="portal-title">Penetration Testing</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/red-teaming/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🔴</div>
+              <div class="portal-title">Red Teaming</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/threat-hunting/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🎯</div>
+              <div class="portal-title">Threat Hunting</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/threat-intelligence/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🧠</div>
+              <div class="portal-title">Threat Intelligence</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/vulnerability-assessment/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">📋</div>
+              <div class="portal-title">Vulnerability Assessment</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/learn/vulnerability-management/" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🛡️</div>
+              <div class="portal-title">Vulnerability Management</div>
+            </div>
+          </a>
+
+        </div>
+
+      </html>
+    </panel>
+  </row>
+</dashboard>
