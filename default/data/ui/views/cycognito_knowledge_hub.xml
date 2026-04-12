@@ -1,0 +1,121 @@
+<!--
+=============================================================================
+ default/data/ui/views/cycognito_knowledge_hub.xml
+ CyCognito Knowledge Hub
+ External datasheet links only
+=============================================================================
+-->
+<dashboard version="1.1" theme="light">
+  <label>📚 CyCognito Knowledge Hub</label>
+
+  <row>
+    <panel>
+      <html>
+        <style>
+          .portal-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:22px;
+            margin-top:20px;
+          }
+          .portal-tile{
+            background:#ffffff;
+            border:1px solid #e5e5e5;
+            border-radius:8px;
+            padding:22px;
+            text-align:center;
+            transition:all .18s ease;
+          }
+          .portal-tile:hover{
+            box-shadow:0 4px 14px rgba(0,0,0,.18);
+            transform:translateY(-2px);
+          }
+          .portal-icon{font-size:34px;margin-bottom:10px;}
+          .portal-title{font-size:15px;font-weight:600;}
+          .portal-link{text-decoration:none;color:inherit;display:block;}
+        </style>
+
+        <div class="portal-grid">
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/CyCognito_Platform_Overview.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🌐</div>
+              <div class="portal-title">CyCognito Platform</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/CyCognito-DS-Automated-Security-Testing-Oct-2024.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🧪</div>
+              <div class="portal-title">Automated Security Testing</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/DS-CyCognito_Discovery_and_Contextualization_2023Q2_v1.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🔎</div>
+              <div class="portal-title">Discovery and Contextualization</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/CyCognito-DS-Prioritization-and-Remediation-Mar2024.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">📈</div>
+              <div class="portal-title">Prioritization and Remediation</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/DS-Exploit-Intelligence-v6.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🎯</div>
+              <div class="portal-title">Exploit Intelligence</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/CyCognito_Data_Sheet_Vulnerability_Management.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🛡️</div>
+              <div class="portal-title">Vulnerability Management</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/CyCognito-DS-Active-Security-Testing-Oct2023.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">⚡</div>
+              <div class="portal-title">Active Security Testing</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/DS-CyCognito_Data_Sheet_Remediation-Planning_Jan_2023.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🧭</div>
+              <div class="portal-title">Remediation Planning</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/Datasheet_Cloud-Connector_November-2023.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">☁️</div>
+              <div class="portal-title">Cloud Connector</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/CyCognito-DS-Customer-Success-Package-May2024.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">🤝</div>
+              <div class="portal-title">Customer Success</div>
+            </div>
+          </a>
+
+          <a class="portal-link" href="https://www.cycognito.com/documents/datasheets/CyCognito_Data_Sheet_NIST-800-53_Sept2022.pdf" target="_blank">
+            <div class="portal-tile">
+              <div class="portal-icon">📚</div>
+              <div class="portal-title">Alignment with NIST 800-53</div>
+            </div>
+          </a>
+
+        </div>
+      </html>
+    </panel>
+  </row>
+</dashboard>
