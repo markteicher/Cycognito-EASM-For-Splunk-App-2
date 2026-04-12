@@ -1,0 +1,532 @@
+<!--
+=============================================================================
+ default/data/ui/views/assets.xml
+ CyCognito for Splunk App
+ Assets Dashboard
+=============================================================================
+
+PURPOSE
+
+Operational dashboard for visualizing CyCognito asset posture, exposure, and
+risk trends across grade, status, type, tag, location, and issue context.
+
+This dashboard provides:
+
+- time-bounded asset posture review
+- location- and organization-scoped asset analysis
+- asset grade distribution
+- asset status distribution
+- asset type distribution
+- grade trend analysis over time
+- status trend analysis over time
+- asset tag distribution
+- high-risk issue type summary
+- risky location prioritization
+- top asset investigation table
+
+DATA SOURCE
+
+This dashboard is powered by CyCognito data models in Splunk:
+
+- datamodel=CyCognito_Assets
+- datamodel=CyCognito_Issues
+
+Supporting drilldowns query CyCognito indexed events through:
+
+- `get_cycognito_index`
+- source=cycognito_assets
+- source=cycognito_issues
+
+PRIMARY ANALYSIS OBJECTIVE
+
+Provide an operational view for analysts to identify:
+
+- assets with poor security grades
+- asset posture changes over time
+- concentrations of risky asset types and tags
+- locations with elevated asset risk
+- unresolved high and critical issue concentration
+- top assets requiring review in the CyCognito portal
+
+FILTER MODEL
+
+Dashboard filtering is controlled by:
+
+- Time Range
+- Location
+- Organization
+
+Panel-scoped filtering is additionally controlled by:
+
+- Grade
+- Status
+- Type
+
+RISK MODEL
+
+This dashboard prioritizes assets using CyCognito posture and issue context.
+
+Primary asset prioritization signals:
+- security_grade
+- security_score
+- status
+- severe_issues
+- tags
+- countries
+- organizations
+
+Issue prioritization is focused on:
+- severity = High
+- severity = Critical
+- issue_status = New
+- issue_status = Unresolved
+
+=============================================================================
+-->
+<form theme="dark" version="1.1" script="multiselect_input.js">
+  <label>🖥️ Assets</label>
+  <fieldset submitButton="false">
+    <input type="time" token="time_range">
+      <label>⏱️ Time Range</label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="multiselect" token="location" searchWhenChanged="true">
+      <label>🌍 Location</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <fieldForLabel>Location</fieldForLabel>
+      <fieldForValue>Location</fieldForValue>
+      <search>
+        <query>| tstats `summariesonly` values(Assets.countries) AS Location from datamodel=CyCognito_Assets where Assets.countries!="-"  
+| mvexpand Location 
+| table Location</query>
+        <earliest>$time_range.earliest$</earliest>
+        <latest>$time_range.latest$</latest>
+      </search>
+      <initialValue>*</initialValue>
+      <prefix>IN (</prefix>
+      <suffix>)</suffix>
+      <valuePrefix>"</valuePrefix>
+      <delimiter>, </delimiter>
+      <valueSuffix>"</valueSuffix>
+    </input>
+    <input type="multiselect" token="organization" searchWhenChanged="true">
+      <label>🏢 Organization</label>
+      <choice value="*">All</choice>
+      <default>*</default>
+      <fieldForLabel>Organization</fieldForLabel>
+      <fieldForValue>Organization</fieldForValue>
+      <search>
+        <query>| tstats `summariesonly` values(Assets.organizations) AS Organization from datamodel=CyCognito_Assets where Assets.organizations!="-"  
+| mvexpand Organization  
+| table Organization</query>
+        <earliest>$time_range.earliest$</earliest>
+        <latest>$time_range.latest$</latest>
+      </search>
+      <initialValue>*</initialValue>
+      <prefix>IN (</prefix>
+      <suffix>)</suffix>
+      <valuePrefix>"</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <delimiter>, </delimiter>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>📊 Assets Overview</title>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>🛡️ Assets by Grade</title>
+      <chart>
+        <search>
+          <query>| tstats `summariesonly` latest(Assets.security_grade) as Grade latest(Assets.countries) as countries latest(Assets.security_score) as Score latest(Assets.organizations) as organizations latest(Assets.status) as Status from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$  by Assets.id 
+| where Status != "Removed" AND Score != "null"
+| stats count as Count by Grade</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.fieldColors">{"A":0x2D3763,"B":0x7E9CDB,"C":0xA872D4, "D":0xFCA94A, "F":0xCF453B, "N/A":0x7875F4}</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">search?q=%60get_cycognito_index%60%20source%3Dcycognito_assets%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20security_grade%3D%22$click.value$%22%20AND%20status!%3D%22Removed%22%20AND%20security_score!%3D%22null%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel>
+      <title>🔄 Assets by Status</title>
+      <chart>
+        <search>
+          <query>| tstats `summariesonly` latest(Assets.status) as Status latest(Assets.countries) as countries latest(Assets.organizations) as organizations from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$ by Assets.id 
+| stats count as Count by Status</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>7D3FD3<option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.fieldColors">{"Normal":7D3FD3,"Changed":2D3763,"New":3865C1, "Removed":6583C2}</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">search?q=%60get_cycognito_index%60%20source%3Dcycognito_assets%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20status%3D%22$click.value$%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel>
+      <title>🧩 Assets by Type</title>
+      <chart>
+        <search>
+          <query>| tstats `summariesonly` latest(Assets.type) as Type latest(Assets.status) as Status latest(Assets.countries) as countries latest(Assets.organizations) as organizations from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$ by Assets.id 
+| where Status != "Removed"
+| stats count as Count by Type</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.fieldColors">{"Domain":FCA94A,"Ip":2D3763,"Webapp":A872D4,"Cert":6583C2}</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">search?q=%60get_cycognito_index%60%20source%3Dcycognito_assets%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20type%3D%22$click.value$%22%20AND%20status!%3D%22Removed%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>📈 Assets by Grade over Time</title>
+      <input type="multiselect" token="grade_1" searchWhenChanged="true">
+        <label>🏷️ Grade</label>
+        <choice value="*">All</choice>
+        <default>D,F</default>
+        <fieldForLabel>grade</fieldForLabel>
+        <fieldForValue>grade</fieldForValue>
+        <search>
+          <query>| tstats `summariesonly` values(Assets.security_grade) AS grade from datamodel=CyCognito_Assets | mvexpand grade | table grade </query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <prefix>IN (</prefix>
+        <suffix>)</suffix>
+        <initialValue>D,F</initialValue>
+        <valuePrefix>"</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter>, </delimiter>
+      </input>
+      <chart>
+        <search>
+          <query>| tstats `summariesonly` latest(Assets.security_grade) as security_grade latest(_time) as _time latest(Assets.countries) as countries latest(Assets.organizations) as organizations latest(Assets.security_score) as Score latest(Assets.status) as Status from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$ AND Assets.security_grade $grade_1$ by Assets.id 
+| where Status != "Removed" AND Score != "null"
+| timechart span=1mon count by security_grade 
+| addtotals</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Assets</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.fieldColors">{"A":0x2D3763,"B":0x7E9CDB,"C":0xA872D4, "D":0xFCA94A, "F":0xCF453B, "N/A":0x7875F4,"Total":CF453B}</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <condition match="$click.name2$=&quot;Total&quot; AND isnull($click.value$)">
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20security_grade%20$grade_1$%20AND%20status!%3D%22Removed%22%20AND%20security_score!%3D%22null%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+          <condition match="$click.name2$=&quot;Total&quot; AND isnotnull($click.value$)">
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20earliest%3D%22$time_range.earliest$%22%20latest%3D%22$time_range.latest$%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20security_grade%20$grade_1$%20AND%20_time%3E%3D%22$earliest$%22%20AND%20_time%3C%3D%22$latest$%22%20AND%20status!%3D%22Removed%22%20AND%20security_score!%3D%22null%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+          <condition match="isnull($click.value$)">
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20security_grade%3D%22$click.name2$%22%20AND%20status!%3D%22Removed%22%20AND%20security_score!%3D%22null%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+          <condition>
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20earliest%3D%22$time_range.earliest$%22%20latest%3D%22$time_range.latest$%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20security_grade%3D%22$click.name2$%22%20AND%20_time%3E%3D%22$earliest$%22%20AND%20_time%3C%3D%22$latest$%22%20AND%20status!%3D%22Removed%22%20AND%20security_score!%3D%22null%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel>
+      <title>📈 Assets by Status over Time</title>
+      <input type="multiselect" token="status_1" searchWhenChanged="true">
+        <label>🔄 Status</label>
+        <choice value="*">All</choice>
+        <default>New,Changed,Normal</default>
+        <fieldForLabel>status</fieldForLabel>
+        <fieldForValue>status</fieldForValue>
+        <search>
+          <query>| tstats `summariesonly` values(Assets.status) AS status from datamodel=CyCognito_Assets | mvexpand status | table status </query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <prefix>IN (</prefix>
+        <suffix>)</suffix>
+        <initialValue>Changed,New,Normal</initialValue>
+        <valuePrefix>"</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter>, </delimiter>
+      </input>
+      <chart>
+        <search>
+          <query>| tstats `summariesonly` latest(Assets.status) as status latest(_time) as _time latest(Assets.countries) as countries latest(Assets.organizations) as organizations from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$ AND Assets.status $status_1$ by Assets.id 
+| timechart span=1mon count by status 
+| addtotals</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleY.text">Assets</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.fieldColors">{"Normal":7D3FD3,"Changed":2D3763,"New":3865C1,"Removed":6583C2,"Total":CF453B}</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <condition match="$click.name2$=&quot;Total&quot; AND isnull($click.value$)">
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20status%20$status_1$&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+          <condition match="$click.name2$=&quot;Total&quot; AND isnotnull($click.value$)">
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20earliest%3D%22$time_range.earliest$%22%20latest%3D%22$time_range.latest$%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20status%20$status_1$%20AND%20_time%3E%3D%22$earliest$%22%20AND%20_time%3C%3D%22$latest$%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+          <condition match="isnull($click.value$)">
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20status%3D%22$click.name2$%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+          <condition>
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20earliest%3D%22$time_range.earliest$%22%20latest%3D%22$time_range.latest$%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20status%3D%22$click.name2$%22%20AND%20_time%3E%3D%22$earliest$%22%20AND%20_time%3C%3D%22$latest$%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+        </drilldown>
+      </chart>
+    </panel>
+    <panel>
+      <title>🏷️ Assets by Tag</title>
+      <input type="multiselect" token="grade_3" searchWhenChanged="true">
+        <label>🏷️ Grade</label>
+        <choice value="*">All</choice>
+        <default>D,F</default>
+        <fieldForLabel>grade</fieldForLabel>
+        <fieldForValue>grade</fieldForValue>
+        <search>
+          <query>| tstats `summariesonly` values(Assets.security_grade) AS grade from datamodel=CyCognito_Assets | mvexpand grade | table grade </query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <prefix>IN (</prefix>
+        <suffix>)</suffix>
+        <initialValue>D,F</initialValue>
+        <valuePrefix>"</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter>, </delimiter>
+      </input>
+      <chart>
+        <search>
+          <query>| tstats `summariesonly` latest(Assets.security_grade) as Grade latest(Assets.security_score) as Score values(Assets.tags) as Tag latest(Assets.countries) as countries latest(Assets.organizations) as organizations latest(Assets.status) as Status from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$ AND Assets.tags!=NULL AND Assets.security_grade $grade_3$ by Assets.id, _time
+| where Status != "Removed" AND Score != "null"
+| mvexpand Tag 
+| eventstats latest(_time) as time1 by Assets.id
+| where _time=time1 
+| chart count over Tag by Grade
+| addtotals
+| where Tag!="" 
+| sort 10 - Total 
+| fields - Total</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.text">Tag</option>
+        <option name="charting.axisTitleY.text">Assets</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.fieldColors">{"A":0x2D3763,"B":0x7E9CDB,"C":0xA872D4, "D":0xFCA94A, "F":0xCF453B, "N/A":0x7875F4}</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <condition match="isnull($click.value$)"></condition>
+          <condition>
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3Dcycognito_assets%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20countries%20$location$%20AND%20organizations%20$organization$%20AND%20tags%3D%22$click.value$%22%20AND%20security_grade%3D%22$click.name2$%22%20AND%20status!%3D%22Removed%22%20AND%20security_score!%3D%22null%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+        </drilldown>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>🛠️ Vulnerability</title>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>🔥 Most Common Issue Type</title>
+      <single>
+        <search>
+          <query>| tstats `summariesonly` latest(Assets.countries) as countries latest(Assets.organizations) as organizations latest(Assets.status) as Status from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$ by Assets.id 
+| where Status != "Removed"
+| rename Assets.id as unique_id 
+| join type=inner unique_id max=0
+    [| tstats `summariesonly` latest(Issues.affected_asset) as unique_id values(Issues.issue_types) as "Issue Type" latest(Issues.issue_status) as Status from datamodel=CyCognito_Issues where Issues.severity="High" OR Issues.severity="Critical" by Issues.id, _time | where Status = "New" OR Status = "Unresolved" | mvexpand "Issue Type"
+| eventstats latest(_time) as time1 by Issues.id
+| where _time=time1 ] 
+| top 1 "Issue Type"</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <link target="_blank">search?q=%60get_cycognito_index%60%20source%3D%22cycognito_assets%22%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%0A%7C%20dedup%20id%20%0A%7C%20rename%20id%20as%20unique_id%20%0A%7C%20where%20status!%3D%22Removed%22%0A%7C%20join%20type%3Dinner%20unique_id%20max%3D0%0A%20%20%20%20%5B%7C%20search%20%60get_cycognito_index%60%20source%3Dcycognito_issues%20%0A%20%20%20%20%7C%20search%20severity%3D%22High%22%20OR%20severity%3D%22Critical%22%20%0A%20%20%20%20%7C%20dedup%20id%0A%20%20%20%20%7C%20rename%20affected_asset%20as%20unique_id%20%0A%20%20%20%20%7C%20where%20issue_status%20%3D%20%22New%22%20OR%20issue_status%20%3D%20%22Unresolved%22%0A%20%20%20%20%20%20%20%20%5D%20%0A%7C%20where%20issue_types%3D%22$click.value$%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>⚖️ Risk Distribution</title>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>📍 Riskiest Locations</title>
+      <input type="multiselect" token="grade_2" searchWhenChanged="true">
+        <label>🏷️ Grade</label>
+        <choice value="*">All</choice>
+        <default>D,F</default>
+        <fieldForLabel>grade</fieldForLabel>
+        <fieldForValue>grade</fieldForValue>
+        <search>
+          <query>| tstats `summariesonly` values(Assets.security_grade) AS grade from datamodel=CyCognito_Assets | mvexpand grade | table grade </query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <prefix>IN (</prefix>
+        <suffix>)</suffix>
+        <initialValue>D,F</initialValue>
+        <valuePrefix>"</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter>, </delimiter>
+      </input>
+      <chart>
+        <search>
+          <query>| tstats `summariesonly` values(Assets.countries) as countries latest(Assets.organizations) as organizations latest(Assets.security_grade) as Grade latest(Assets.status) as Status latest(Assets.security_score) as Score from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$ AND Assets.countries!="-" AND Assets.security_grade $grade_2$ by Assets.id, _time
+| where Status != "Removed" AND Score != "null"
+| mvexpand countries
+| eventstats latest(_time) as time1 by Assets.id
+| where _time=time1
+| chart count over countries by Grade 
+| rename countries as Location 
+| addtotals 
+| sort 10 - Total 
+| fields - Total</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.text">Location</option>
+        <option name="charting.axisTitleY.text">Assets</option>
+        <option name="charting.axisY.abbreviation">auto</option>
+        <option name="charting.chart">bar</option>
+        <option name="charting.chart.showDataLabels">all</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.fieldColors">{"A":0x2D3763,"B":0x7E9CDB,"C":0xA872D4, "D":0xFCA94A, "F":0xCF453B, "N/A":0x7875F4}</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <condition match="isnull($click.value$)"></condition>
+          <condition>
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3Dcycognito_assets%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20organizations%20$organization$%20AND%20countries%3D%22$click.value$%22%20AND%20security_grade%3D%22$click.name2$%22%20AND%20status!%3D%22Removed%22%20AND%20security_score!%3D%22null%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+        </drilldown>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>🔝 Top 1000 Assets</title>
+      <input type="multiselect" token="type_1" searchWhenChanged="true">
+        <label>🧩 Type</label>
+        <choice value="*">All</choice>
+        <fieldForLabel>type</fieldForLabel>
+        <fieldForValue>type</fieldForValue>
+        <search>
+          <query>| tstats `summariesonly` values(Assets.type) AS type from datamodel=CyCognito_Assets | mvexpand type | table type </query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <prefix>IN (</prefix>
+        <suffix>)</suffix>
+        <valuePrefix>"</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter>, </delimiter>
+        <default>*</default>
+        <initialValue>*</initialValue>
+      </input>
+      <input type="multiselect" token="grade_4" searchWhenChanged="true">
+        <label>🛡️ Security Grade</label>
+        <choice value="*">All</choice>
+        <default>D,F</default>
+        <fieldForLabel>grade</fieldForLabel>
+        <fieldForValue>grade</fieldForValue>
+        <search>
+          <query>| tstats `summariesonly` values(Assets.security_grade) AS grade from datamodel=CyCognito_Assets | mvexpand grade | table grade </query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <prefix>IN (</prefix>
+        <suffix>)</suffix>
+        <initialValue>D,F</initialValue>
+        <valuePrefix>"</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter>, </delimiter>
+      </input>
+      <input type="multiselect" token="status_for_top1000" searchWhenChanged="true">
+        <label>🔄 Status</label>
+        <choice value="*">All</choice>
+        <fieldForLabel>status</fieldForLabel>
+        <fieldForValue>status</fieldForValue>
+        <search>
+          <query>| tstats `summariesonly` values(Assets.status) AS status from datamodel=CyCognito_Assets | mvexpand status | where status!="Removed" | table status </query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <prefix>IN (</prefix>
+        <suffix>)</suffix>
+        <valuePrefix>"</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter>, </delimiter>
+        <default>*</default>
+        <initialValue>*</initialValue>
+      </input>
+      <table>
+        <search>
+          <query>| tstats `summariesonly` latest(_time) as _time, latest(Assets.security_grade) as grade, latest(Assets.first_detected) as "First Detected", latest(Assets.last_detected) as "Last Detected", latest(Assets.type) as type, latest(Assets.status) as status, latest(Assets.investigation_status) as "Investigation Status", latest(Assets.hosting_type) as "Hosting Type", latest(Assets.severe_issues) as "Severe Issues", latest(Assets.countries) as countries, latest(Assets.organizations) as organizations, latest(Assets.security_score) as Score from datamodel=CyCognito_Assets where Assets.countries $location$ AND Assets.organizations $organization$ AND Assets.type $type_1$ AND Assets.security_grade $grade_4$ AND Assets.status $status_for_top1000$ by Assets.id 
+| where status != "Removed" AND Score != "null"
+| eval "Explore on CyCognito Portal"="Click here"
+| rename Assets.id as Id, countries as Location, organizations as Organizations, type as Type, status as Status, grade as "Security Grade"
+| sort 1000 - _time | fields - _time</query>
+          <earliest>$time_range.earliest$</earliest>
+          <latest>$time_range.latest$</latest>
+        </search>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
+        <drilldown>
+          <condition field="Explore on CyCognito Portal">
+            <link target="_blank">https://platform.cycognito.com/assets/$row.Id|n$/info</link>
+          </condition>
+          <condition field="*">
+            <link target="_blank">search?q=%60get_cycognito_index%60%20source%3Dcycognito_assets%20sourcetype!%3D%22cycognito%3Aassets%3Aiprange%22%20%0A%7C%20dedup%20id%20%0A%7C%20search%20id%3D%22$row.Id$%22&amp;earliest=$time_range.earliest$&amp;latest=$time_range.latest$</link>
+          </condition>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</form>
